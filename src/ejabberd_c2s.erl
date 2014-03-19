@@ -1854,11 +1854,16 @@ presence_update(From, Packet, StateData) ->
 			    ejabberd_hooks:run(user_available_hook,
 					       NewStateData#state.server,
 					       [NewStateData#state.jid]),
-			    if NewPriority >= 0 ->
+			    
+			    %% Modified so negative priority can also receive offline bounce_messages %%
+			    %% This violates XEP-0160 %%
+
+%%			    if NewPriority >= 0 ->
 				   resend_offline_messages(NewStateData),
-				   resend_subscription_requests(NewStateData);
-			       true -> ok
-			    end,
+				   resend_subscription_requests(NewStateData),
+%%			       true -> ok
+%%			    end,
+ 				%% End of modification %%a
 			    presence_broadcast_first(From, NewStateData,
 						     Packet);
 			true ->
